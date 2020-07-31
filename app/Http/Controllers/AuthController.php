@@ -16,7 +16,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'signup']]);
+        $this->middleware('JWT', ['except' => ['login', 'signup']]);
     }
 
     /**
@@ -29,7 +29,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Email or Password Invalid'], 401);
         }
 
         return $this->respondWithToken($token);
@@ -78,7 +78,7 @@ class AuthController extends Controller
         $data = array();
         $data['name'] = $request->name;
         $data['email'] = $request->email;
-        $data['password'] = Hash::make($request->password); 
+        $data['password'] = Hash::make($request->password);
         DB::table('users')->insert($data);
 
         return $this->login($request);
@@ -97,7 +97,10 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'name' => auth()->user()->name,
+            'user_id' => auth()->user()->id,
+            'email' => auth()->user()->email,
         ]);
     }
 }
