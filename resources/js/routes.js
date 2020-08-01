@@ -6,10 +6,15 @@ let logout = require('./components/auth/logout.vue').default;
 // End Auth
 let home = require('./components/home.vue').default;
 
+// Emplyee Component
+let storeemployee = require('./components/employee/create.vue').default;
+
 export const routes = [
     { path: '/', component: login, name: '/' },
     { path: '/register', component: register, name: 'register' },
     { path: '/forget', component: forget, name: 'forget' },
     { path: '/logout', component: logout, name: 'logout' },
     { path: '/home', component: home, name: 'home' },
+
+    { path: '/store-employee', component: storeemployee, name: 'store-employee' },
 ]
