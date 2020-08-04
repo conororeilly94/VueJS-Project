@@ -38,8 +38,8 @@
                         <td> {{ employee.salary }} </span></td>
                         <td> {{ employee.joining_date }} </a></td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-primary">Edit</a>
-                            <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                            <router-link :to="{ name: 'edit-employee', params:{id:employee.id} }" class="btn btn-sm btn-primary">Edit</router-link>
+                            <a @click="deleteEmployee(employee.id)" class="btn btn-sm btn-danger"><font color="#ffffff">Delete</font></a>
                         </td>
                       </tr>
                     </tbody>
@@ -83,6 +83,35 @@
                 axios.get('/api/employee')
                 .then(({ data }) => (this.employees = data))
                 .catch()
+            },
+            deleteEmployee(id) {
+                Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+                })
+                .then((result) => {
+                if (result.value) {
+                    axios.delete('/api/employee/'+id)
+                    .then(() => {
+                        this.employees = this.employees.filter(employee => {
+                            return employee.id !== id
+                        })
+                    })
+                    .catch(() => {
+                        this.$router.push({ name: 'employee' })
+                    })
+                    Swal.fire(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                    )
+                }
+                })
             }
         },
         created() {
