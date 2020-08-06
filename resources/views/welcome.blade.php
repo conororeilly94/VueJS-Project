@@ -81,6 +81,20 @@
                 </li>
 
                 <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap3"
+                    aria-expanded="true" aria-controls="collapseBootstrap3">
+                    <i class="far fa-fw fa-window-maximize"></i>
+                    <span>Product</span>
+                    </a>
+                    <div id="collapseBootstrap3" class="collapse" aria-labelledby="headingBootstrap" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <router-link  class="collapse-item" to="/store-product">Add Product</router-link >
+                            <router-link  class="collapse-item" to="/product">All Product</router-link >
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="forms.html">
                     <i class="fab fa-fw fa-wpforms"></i>
                     <span>Forms</span>
@@ -334,6 +348,18 @@
                     </div>
                     <!---Container Fluid-->
                 </div>
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; <script> document.write(new Date().getFullYear()); </script> - Developed by
+                        <b><a href="https://github.com/conororeilly94" target="_blank">Conor O Reilly</a></b>
+                        </span>
+                    </div>
+                    </div>
+                </footer>
+                <!-- Footer -->
             </div>
         </div>
     </div>
