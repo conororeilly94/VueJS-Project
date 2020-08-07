@@ -32,11 +32,11 @@
                     </thead>
                     <tbody>
                       <tr v-for="supplier in filtersearch" :key="supplier.id">
-                        <td> {{ supplier.name }} </a></td>
+                        <td> {{ supplier.name }} </td>
                         <td><img :src="supplier.photo" id="em_photo"></td>
                         <td> {{ supplier.phone }} </td>
                         <td> {{ supplier.shopname }} </span></td>
-                        <td> {{ supplier.email }} </a></td>
+                        <td> {{ supplier.email }} </td>
                         <td>
                             <router-link :to="{ name: 'edit-supplier', params:{id:supplier.id} }" class="btn btn-sm btn-primary">Edit</router-link>
                             <a @click="deleteSupplier(supplier.id)" class="btn btn-sm btn-danger"><font color="#ffffff">Delete</font></a>

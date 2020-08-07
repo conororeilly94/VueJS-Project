@@ -15,7 +15,7 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4"> Pay Salary </h1>
                                     </div>
-                                    <form class="user" @submit.prevent="employeeUpdate">
+                                    <form class="user" @submit.prevent="salaryPaid">
 
                                         <div class="form-group">
                                             <div class="form-row">
@@ -103,13 +103,8 @@
                 form:{
                     name: '',
                     email: '',
-                    phone: '',
+                    salary_month: '',
                     salary: '',
-                    address: '',
-                    photo: '',
-                    newphoto: '',
-                    nid: '',
-                    joining_date: ''
                 },
                 errors:{}
             }
@@ -122,26 +117,11 @@
         },
 
         methods: {
-            onFileSelected(event){
-                let file = event.target.files[0];
-                if (file.size > 1048770) {
-                Notification.image_validation()
-                }else{
-                let reader = new FileReader();
-                reader.onload = event =>{
-                    this.form.newphoto = event.target.result
-
-                };
-                reader.readAsDataURL(file);
-                }
-
-            },
-
-            employeeUpdate() {
-                let id = this.$route.params.id;
-                axios.patch('/api/employee/'+id,this.form)
+            salaryPaid() {
+                let id = this.$route.params.id
+                axios.post('/api/salary/paid/'+id,this.form)
                 .then(() => {
-                    this.$router.push({ name: 'employee'})
+                    this.$router.push({ name: 'given-salary'})
                     Notification.success()
                 })
                 .catch(error =>this.errors = error.response.data.errors)

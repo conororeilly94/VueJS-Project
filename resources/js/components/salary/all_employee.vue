@@ -32,11 +32,11 @@
                     </thead>
                     <tbody>
                       <tr v-for="employee in filtersearch" :key="employee.id">
-                        <td> {{ employee.name }} </a></td>
+                        <td> {{ employee.name }} </td>
                         <td><img :src="employee.photo" id="em_photo"></td>
                         <td> {{ employee.phone }} </td>
                         <td> {{ employee.salary }} </span></td>
-                        <td> {{ employee.joining_date }} </a></td>
+                        <td> {{ employee.joining_date }} </td>
                         <td>
                             <router-link :to="{ name: 'pay-salary', params:{id:employee.id} }" class="btn btn-sm btn-primary">Pay Salary</router-link>
                         </td>
@@ -79,7 +79,7 @@
 
         methods: {
             allEmployee() {
-                axios.get('/api/employee')
+                axios.get('/api/employee/')
                 .then(({ data }) => (this.employees = data))
                 .catch()
             },

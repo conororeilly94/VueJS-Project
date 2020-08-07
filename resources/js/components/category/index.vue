@@ -28,7 +28,7 @@
                     </thead>
                     <tbody>
                       <tr v-for="category in filtersearch" :key="category.id">
-                        <td> {{ category.category_name }} </a></td>
+                        <td> {{ category.category_name }} </td>
                         <td>
                             <router-link :to="{ name: 'edit-category', params:{id:category.id} }" class="btn btn-sm btn-primary">Edit</router-link>
                             <a @click="deleteCategory(category.id)" class="btn btn-sm btn-danger"><font color="#ffffff">Delete</font></a>

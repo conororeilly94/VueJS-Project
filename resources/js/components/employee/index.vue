@@ -32,11 +32,11 @@
                     </thead>
                     <tbody>
                       <tr v-for="employee in filtersearch" :key="employee.id">
-                        <td> {{ employee.name }} </a></td>
+                        <td> {{ employee.name }} </td>
                         <td><img :src="employee.photo" id="em_photo"></td>
                         <td> {{ employee.phone }} </td>
                         <td> {{ employee.salary }} </span></td>
-                        <td> {{ employee.joining_date }} </a></td>
+                        <td> {{ employee.joining_date }} </td>
                         <td>
                             <router-link :to="{ name: 'edit-employee', params:{id:employee.id} }" class="btn btn-sm btn-primary">Edit</router-link>
                             <a @click="deleteEmployee(employee.id)" class="btn btn-sm btn-danger"><font color="#ffffff">Delete</font></a>

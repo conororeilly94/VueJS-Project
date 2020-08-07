@@ -30,9 +30,9 @@
                     </thead>
                     <tbody>
                       <tr v-for="expense in expenses" :key="expense.id">
-                        <td> {{ expense.details }} </a></td>
-                        <td> {{ expense.amount }} </a></td>
-                        <td> {{ expense.expense_date }} </a></td>
+                        <td> {{ expense.details }} </td>
+                        <td> {{ expense.amount }} </td>
+                        <td> {{ expense.expense_date }} </td>
                         <td>
                             <router-link :to="{ name: 'edit-expense', params:{id:expense.id} }" class="btn btn-sm btn-primary">Edit</router-link>
                             <a @click="deleteExpense(expense.id)" class="btn btn-sm btn-danger"><font color="#ffffff">Delete</font></a>
