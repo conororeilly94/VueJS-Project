@@ -25,33 +25,23 @@
                             <thead class="thead-light">
                             <tr>
                                 <th>Name</th>
-                                <th>Quanity</th>
+                                <th>Qty</th>
                                 <th>Unit</th>
                                 <th>Total</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td><a href="#">Name</a></td>
-                                <td>Quanity</td>
-                                <td>Unit</td>
-                                <td>Total</td>
-                                <td><a href="#" class="btn btn-sm btn-primary">X</a></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">Name</a></td>
-                                <td>Quanity</td>
-                                <td>Unit</td>
-                                <td>Total</td>
-                                <td><a href="#" class="btn btn-sm btn-primary">X</a></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">Name</a></td>
-                                <td>Quanity</td>
-                                <td>Unit</td>
-                                <td>Total</td>
-                                <td><a href="#" class="btn btn-sm btn-primary">X</a></td>
+                            <tr v-for="cart in carts" :key="cart.id">
+                                <td>{{ cart.pro_name }}</td>
+                                <td><input type="text" readonly="" style="width: 15px;" :value="cart.pro_quantity">
+                                <button @click.prevent="increment(cart.id)" class="btn btn-sm btn-success">+</button>
+                                <button @click.prevent="decrement(cart.id)" class="btn btn-sm btn-danger" v-if="cart.pro_quantity >= 2">-</button>
+                                <button class="btn btn-sm btn-danger" v-else="" disabled="">-</button>
+                                </td>
+                                <td>{{ cart.product_price  }}</td>
+                                <td>{{ cart.subtotal }}</td>
+                                <td><a @click="removeItem(cart.id)" class="btn btn-sm btn-primary"><font color="#ffffff">X</font></a></td>
                             </tr>
                             </tbody>
                         </table>
@@ -59,25 +49,23 @@
                         <div class="card-footer">
                             <ul class="list-group">
                                 <li class="list-group-item d-flex justify-content-between  align-items-center">
-                                    Total Quantity: <strong> 56 </strong>
+                                    Total Quantity: <strong> {{ qty }} </strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between  align-items-center">
-                                    Sub Total: <strong> €563 </strong>
+                                    Sub Total: <strong> €{{ subtotal }} </strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between  align-items-center">
-                                    VAT: <strong> 35% </strong>
+                                    VAT: <strong> {{ vats.vat }}% </strong>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between  align-items-center">
-                                    Total: <strong> €156 </strong>
+                                    Total: <strong> €{{ subtotal*vats.vat / 100 + subtotal }} </strong>
                                 </li>
                             </ul>
                             <br>
                             <form action="">
                                 <label> Customer Name </label>
                                 <select class="form-control" v-model="customer_id">
-                                    <option> Conor </option>
-                                    <option> Ciaran </option>
-                                    <option> Ryan </option>
+                                    <option v-for="customer in customers"> {{ customer.name }} </option>
                                 </select>
 
                                 <label> Pay </label>
@@ -132,7 +120,7 @@
 
                                     <div class="row">
                                         <div class="col-lg-3 col-md-3 col-sm-6 col-6" v-for="product in filtersearch" :key="product.id">
-                                            <a href="#">
+                                            <button class="btn btn-sm" @click.prevent="AddToCart(product.id)">
                                             <div class="card" style="width: 8.5rem; height: 12.5rem; margin-bottom: 5px">
                                                 <img :src="product.image" id="em_photo" class="card-img-top">
                                                 <div class="card-body">
@@ -140,7 +128,7 @@
                                                     <span class="badge badge-success" v-if="product.product_quantity >= 1 "> Available: {{ product.product_quantity }} </span>
                                                     <span class="badge badge-danger" v-else=""> Out of Stock </span>
                                                 </div>
-                                            </div></a>
+                                            </div></button>
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +139,7 @@
 
                                     <div class="row">
                                         <div class="col-lg-3 col-md-3 col-sm-6 col-6" v-for="getproduct in getfiltersearch" :key="getproduct.id">
-                                            <a href="#">
+                                            <button class="btn btn-sm" @click.prevent="AddToCart(getproduct.id)">
                                             <div class="card" style="width: 8.5rem; height: 12.5rem; margin-bottom: 5px">
                                                 <img :src="getproduct.image" id="em_photo" class="card-img-top">
                                                 <div class="card-body">
@@ -159,7 +147,7 @@
                                                     <span class="badge badge-success" v-if="getproduct.product_quantity  >= 1 ">Available: {{ getproduct.product_quantity }}  </span>
                                                     <span class="badge badge-danger" v-else=" "> Out of Stock </span>
                                                 </div>
-                                            </div></a>
+                                            </div></button>
                                         </div>
                                     </div>
                             </div>
@@ -188,6 +176,12 @@
         created() {
             this.allProduct();
             this.allCategory();
+            this.allCustomer();
+            this.cartProduct();
+            this.vat();
+            Reload.$on('AfterAdd', () =>{
+                this.cartProduct();
+            })
         },
 
         data() {
@@ -196,7 +190,11 @@
                 categories:'',
                 getproducts:[],
                 searchTerm: '',
-                getsearchTerm: ''
+                getsearchTerm: '',
+                customers: '',
+                errors: '',
+                carts: [],
+                vats: ''
             }
         },
         computed: {
@@ -210,9 +208,69 @@
                     return getproduct.product_name.match(this.getsearchTerm)
                 })
             },
+            qty() {
+                let sum = 0;
+                for (let i = 0; i < this.carts.length; i++) {
+                    sum += (parseFloat(this.carts[i].pro_quantity));
+                }
+                return sum;
+            },
+            subtotal() {
+                let sum = 0;
+                for (let i = 0; i < this.carts.length; i++) {
+                    sum += (parseFloat(this.carts[i].pro_quantity) * parseFloat(this.carts[i].product_price));
+                }
+                return sum;
+            },
         },
 
         methods: {
+            // Cart Methods
+            AddToCart(id){
+                axios.get('/api/addToCart/'+id)
+                .then(() => {
+                    Reload.$emit('AfterAdd');
+                    Notification.cart_success()
+                })
+                .catch()
+            },
+            cartProduct() {
+                axios.get('/api/cart/product/')
+                .then(({data}) => (this.carts = data))
+                .catch()
+            },
+            removeItem(id) {
+                axios.get('/api/remove/cart/'+id)
+                .then(() => {
+                    Reload.$emit('AfterAdd');
+                    Notification.cart_delete()
+                })
+                .catch()
+            },
+            increment(id){
+                axios.get('/api/increment/'+id)
+                .then(() => {
+                Reload.$emit('AfterAdd');
+                Notification.success()
+                })
+                .catch()
+            },
+            decrement(id){
+                axios.get('/api/decrement/'+id)
+                .then(() => {
+                Reload.$emit('AfterAdd');
+                Notification.success()
+                })
+                .catch()
+            },
+            vat() {
+                axios.get('/api/vats/')
+                .then(({data}) => (this.vats = data))
+                .catch()
+            },
+
+            // End Cart Methods
+
             allProduct(){
                 axios.get('/api/product/')
                 .then(({data}) => (this.products = data))
@@ -222,6 +280,11 @@
                 axios.get('/api/category/')
                 .then(({data}) => (this.categories = data))
                 .catch()
+            },
+            allCustomer(){
+                axios.get('/api/customer/')
+                .then(({data}) => (this.customers = data))
+                .catch(console.log('error'))
             },
             subproduct(id){
                 axios.get('/api/getting/product/'+id)
