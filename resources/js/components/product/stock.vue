@@ -40,7 +40,7 @@
                         <td> {{ product.category_name }} </td>
                         <td> {{ product.buying_price }} </span></td>
                         <td v-if="product.product_quantity >= 1 "><span class="badge badge-success"> Available </span></td>
-                        <td v-else=""><span class="badge badge-danger"> Stock Out </span></td>
+                        <td v-else=""><span class="badge badge-danger"> Out of Stock </span></td>
                         <td> {{ product.product_quantity }} </td>
                         <td>
                             <router-link :to="{ name: 'edit-stock', params:{id:product.id} }" class="btn btn-sm btn-primary"> Edit </router-link>
