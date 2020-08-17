@@ -62,10 +62,11 @@
                                 </li>
                             </ul>
                             <br>
-                            <form action="">
+
+                            <form @submit.prevent="orderdone">
                                 <label> Customer Name </label>
                                 <select class="form-control" v-model="customer_id">
-                                    <option v-for="customer in customers"> {{ customer.name }} </option>
+                                    <option :value="customer.id" v-for="customer in customers"> {{ customer.name }} </option>
                                 </select>
 
                                 <label> Pay </label>
@@ -75,7 +76,7 @@
                                 <input type="text" class="form-control" required="" v-model="due">
 
                                 <label> Pay By: </label>
-                                <select class="form-control" v-model="customer_id">
+                                <select class="form-control" v-model="payby">
                                     <option value="HandCash"> Hand Cash </option>
                                     <option value="Checque"> Cheque </option>
                                     <option value="GiftCard"> Gift Card </option>
@@ -186,6 +187,12 @@
 
         data() {
             return {
+
+                customer_id: '',
+                pay: '',
+                due: '',
+                payby: '',
+
                 products:[],
                 categories:'',
                 getproducts:[],
@@ -194,7 +201,7 @@
                 customers: '',
                 errors: '',
                 carts: [],
-                vats: ''
+                vats: '',
             }
         },
         computed: {
@@ -267,6 +274,17 @@
                 axios.get('/api/vats/')
                 .then(({data}) => (this.vats = data))
                 .catch()
+            },
+            orderdone() {
+                let total = this.subtotal*this.vats.vat / 100 + this.subtotal;
+                var data = { qty: this.qty, subtotal: this.subtotal, customer_id: this.customer_id, payby: this.payby,
+                            pay: this.pay, due: this.due, vat: this.vat, total: total }
+
+                axios.post('/api/orderdone', data)
+                .then(() => {
+                    Notification.success()
+                    this.$router.push({ name: 'home' })
+                })
             },
 
             // End Cart Methods
