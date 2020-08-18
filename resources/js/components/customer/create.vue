@@ -20,7 +20,7 @@
                                         <div class="form-group">
                                             <div class="form-row">
                                                 <div class="col-md-6">
-                                                    <label for="exampleFormControlTextarea1"><b>Customer Details</b></label>
+                                                    <label for="exampleFormControlTextarea1"><b>Customer Name</b></label>
                                                     <input type="text" class="form-control" id="exampleInputFirstName"
                                                     placeholder="Enter Your Full Name" v-model="form.name">
                                                     <small class="text-danger" v-if="errors.name"> {{ errors.name[0] }} </small>

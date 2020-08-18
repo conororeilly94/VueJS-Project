@@ -17,7 +17,6 @@
                     <div class="card mb-4">
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                             <h6 class="m-0 font-weight-bold text-primary">Expense Insert</h6>
-                            <a class="btn btn-sm btn-info"><font color="#ffffff"> Add Customer </font></a>
                         </div>
 
                         <div class="table-responsive" style="font-size: 12px;">
